@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, required this.title});
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -14,17 +15,10 @@ class LoginScreen extends StatefulWidget {
   final String title;
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  void _return(){
-    Navigator.pop(context);
-  }
-  void _login(){
-    //TODO
-  }
-
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -35,15 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: _return,
-        ),
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the LoginScreen object that was created by
+        // Here we take the value from the HomeScreen object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text('Padleomic'),
       ),
@@ -51,27 +41,21 @@ class _LoginScreenState extends State<LoginScreen> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextButton(
-              onPressed: _login,
-              child: const Text('Login'),
-            ),
-          ]
-        ),
+            // Column is also a layout widget. It takes a list of children and
+            // arranges them vertically. By default, it sizes itself to fit its
+            // children horizontally, and tries to be as tall as its parent.
+            //
+            // Column has various properties to control how it sizes itself and
+            // how it positions its children. Here we use mainAxisAlignment to
+            // center the children vertically; the main axis here is the vertical
+            // axis because Columns are vertical (the cross axis would be
+            // horizontal).
+            //
+            // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+            // action in the IDE, or press "p" in the console), to see the
+            // wireframe for each widget.
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[]),
       ),
     );
   }

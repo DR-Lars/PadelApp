@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'loginScreen.dart';
+import 'homeScreen.dart';
+
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key, required this.title});
 
@@ -19,13 +20,14 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
-  void _login(){
+  void _login() {
     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen(title:"Login screen") )
-    );
+        context,
+        MaterialPageRoute(
+            builder: (context) => const HomeScreen(title: "Home screen")));
   }
-  void _register(){
+
+  void _register() {
     //TODO
     /*
     Navigator.push(
@@ -57,31 +59,30 @@ class _StartScreenState extends State<StartScreen> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextButton(
-              onPressed: _login,
-              child: const Text('Login'),
-            ),
-            TextButton(
-              onPressed: _register,
-              child: const Text('Register'),
-            ),
-          ]
-        ),
+            // Column is also a layout widget. It takes a list of children and
+            // arranges them vertically. By default, it sizes itself to fit its
+            // children horizontally, and tries to be as tall as its parent.
+            //
+            // Column has various properties to control how it sizes itself and
+            // how it positions its children. Here we use mainAxisAlignment to
+            // center the children vertically; the main axis here is the vertical
+            // axis because Columns are vertical (the cross axis would be
+            // horizontal).
+            //
+            // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+            // action in the IDE, or press "p" in the console), to see the
+            // wireframe for each widget.
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextButton(
+                onPressed: _login,
+                child: const Text('Login'),
+              ),
+              TextButton(
+                onPressed: _register,
+                child: const Text('Register'),
+              ),
+            ]),
       ),
     );
   }
