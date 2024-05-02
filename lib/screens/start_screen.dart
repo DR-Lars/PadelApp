@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/database_connection.dart';
 import 'home_screen.dart';
 
 class StartScreen extends StatefulWidget {
@@ -20,8 +21,8 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
-  void _login() {
-    const users await fetchUsers;
+  Future<void> _login() async {
+    var users = await fetchUsers;
     
     Navigator.push(
         context,
