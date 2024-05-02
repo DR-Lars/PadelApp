@@ -1,15 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:padel_application/models/user.dart';
 
-Future<void> fetchUsers() {
+Future<List<UserModel>> fetchUsers() async{
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-  
-  return users.get()
+
+  List<UserModel> result = [];
+  users.get()
     .then((QuerySnapshot snapshot) {
       snapshot.docs.forEach((doc) {
-        print('${doc.id} => ${doc.data()}');
+        final data = doc.data() as Map;
+        final UserModel user = new UserModel(id: doc.id, email: data['email'], userName: data['username'], gender: data['gender'], phone: data['phone'], password: data['password'], location: new Location(latitude: data['location'].latitude, longitude: data['location'].longitude), bio: data['bio'], level: data['level']);
+        result.add(user);
       });
+      print(result);
+      return result;
     })
-    .catchError((error) => print("Failed to fetch users: $error"));
+      .catchError((error) => print("Failed to fetch users: $error"));
+  return result;
 }
 
 Future<void> addUser(String name, String email, String password) {

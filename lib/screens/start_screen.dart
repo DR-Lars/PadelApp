@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../services/database_connection.dart';
 import 'home_screen.dart';
+import 'package:padel_application/services/database_connection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key, required this.title});
@@ -22,12 +23,13 @@ class StartScreen extends StatefulWidget {
 
 class _StartScreenState extends State<StartScreen> {
   Future<void> _login() async {
-    var users = await fetchUsers;
-    
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const HomeScreen(title: "Home screen")));
+    var temp = await fetchUsers();
+    print(temp);
+
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => const HomeScreen(title: "Home screen")));
   }
 
   void _register() {
