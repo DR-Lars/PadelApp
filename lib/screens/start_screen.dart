@@ -21,6 +21,8 @@ class StartScreen extends StatefulWidget {
 
 class _StartScreenState extends State<StartScreen> {
   void _login() {
+    const users await fetchUsers;
+    
     Navigator.push(
         context,
         MaterialPageRoute(
