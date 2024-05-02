@@ -8,5 +8,11 @@ final String password;
 final Location? location;
 final String? bio;
 
-UserModel({ this.id, this.email, this.userName, this.gender, this.phone, this.password, this.location, this.bio});
+UserModel({ required this.id, required this.email, this.userName, this.gender, this.phone, required this.password, this.location, this.bio});
+}
+
+class Location {
+  var valX;
+  var valY;
+  Location({this.valX,this.valY});
 }
