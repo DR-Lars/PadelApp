@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'homeScreen.dart';
 
-class StartScreen extends StatefulWidget {
-  const StartScreen({super.key, required this.title});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -16,27 +15,10 @@ class StartScreen extends StatefulWidget {
   final String title;
 
   @override
-  State<StartScreen> createState() => _StartScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _StartScreenState extends State<StartScreen> {
-  void _login() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const HomeScreen(title: "Home screen")));
-  }
-
-  void _register() {
-    //TODO
-    /*
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen(title:"Login screen") )
-    );
-    */
-  }
-
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -51,11 +33,11 @@ class _StartScreenState extends State<StartScreen> {
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the StartScreen object that was created by
+        // Here we take the value from the HomeScreen object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text('Padleomic'),
+        title: const Text('Padleomic'),
       ),
-      body: Center(
+      body: const Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
@@ -73,16 +55,7 @@ class _StartScreenState extends State<StartScreen> {
             // action in the IDE, or press "p" in the console), to see the
             // wireframe for each widget.
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                onPressed: _login,
-                child: const Text('Login'),
-              ),
-              TextButton(
-                onPressed: _register,
-                child: const Text('Register'),
-              ),
-            ]),
+            children: <Widget>[]),
       ),
     );
   }
