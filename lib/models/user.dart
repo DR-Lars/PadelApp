@@ -1,4 +1,3 @@
-import 'location.dart'
 class UserModel {
 final String id;
 final String email;
