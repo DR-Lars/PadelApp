@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'homeScreen.dart';
+import 'home_screen.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key, required this.title});
@@ -30,13 +30,10 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   void _register() {
-    //TODO
-    /*
     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen(title:"Login screen") )
-    );
-    */
+        context,
+        MaterialPageRoute(
+            builder: (context) => const HomeScreen(title: "Home screen")));
   }
 
   @override
