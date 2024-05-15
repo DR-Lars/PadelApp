@@ -1,9 +1,6 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'package:padel_application/services/database_connection.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key, required this.title});
