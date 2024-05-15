@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'package:padel_application/services/database_connection.dart';
@@ -22,21 +24,38 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
+  TextEditingController username = TextEditingController();
+  TextEditingController password = TextEditingController();
+  bool _isValid = false;
+  String _errorMessage = '';
   Future<void> _login() async {
     var temp = await fetchUsers();
-    print(temp);
+    print(username.text);
+    print(password.text);
+    setState(() {
+      _isValid = _validatePassword(password.text);
+    });
+    if(_isValid){
+      temp.forEach((user){
+        if(user.userName == username.text && user.password == username.text){
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomeScreen(id: user.id)));
+        }
+      });
+    }else{
+      setState(() {
+        _errorMessage = "Wrong username or password";
+      });
+    }
+  }
 
+  void _register() {
     // Navigator.push(
     //     context,
     //     MaterialPageRoute(
     //         builder: (context) => const HomeScreen(title: "Home screen")));
-  }
-
-  void _register() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const HomeScreen(title: "Home screen")));
   }
 
   @override
@@ -55,12 +74,14 @@ class _StartScreenState extends State<StartScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         // Here we take the value from the StartScreen object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text('Padleomic'),
+        title: const Text('Padleomic'),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 100),
+        child: Center(
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+          child: Column(
             // Column is also a layout widget. It takes a list of children and
             // arranges them vertically. By default, it sizes itself to fit its
             // children horizontally, and tries to be as tall as its parent.
@@ -74,18 +95,71 @@ class _StartScreenState extends State<StartScreen> {
             // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
             // action in the IDE, or press "p" in the console), to see the
             // wireframe for each widget.
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  controller: username,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Username',
+                  ),
+                ),
+                TextFormField(
+                  controller: password,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Password',
+                  ),
+                ),
+
+                // Display the result of password validation
+                _isValid ? const Text('Password is valid!', style: TextStyle(color: Colors.green),)
+                    : Text('Password is not valid!\n• $_errorMessage', style: const TextStyle(color: Colors.red),
+                ),
               TextButton(
-                onPressed: _login,
-                child: const Text('Login'),
-              ),
-              TextButton(
-                onPressed: _register,
-                child: const Text('Register'),
-              ),
-            ]),
-      ),
+                  onPressed: _login,
+                  child: const Text('Login'),
+                ),
+                TextButton(
+                  onPressed: _register,
+                  child: const Text('Register'),
+                ),
+              ]),
+        ),
+      )
     );
+  }
+  bool _validatePassword(String password) {
+    // Reset error message
+    _errorMessage = '';
+
+    // Password length greater than 6
+    if (password.length <6) {
+      _errorMessage += 'Password must be longer than 6 characters.\n';
+    }
+
+    // Contains at least one uppercase letter
+    if (!password.contains(RegExp(r'[A-Z]'))) {
+      _errorMessage += '• Uppercase letter is missing.\n';
+    }
+
+    // Contains at least one lowercase letter
+    if (!password.contains(RegExp(r'[a-z]'))) {
+      _errorMessage += '• Lowercase letter is missing.\n';
+    }
+
+    // Contains at least one digit
+    if (!password.contains(RegExp(r'[0-9]'))) {
+      _errorMessage += '• Digit is missing.\n';
+    }
+
+    // Contains at least one special character
+    if (!password.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
+      _errorMessage += '• Special character is missing.\n';
+    }
+
+    // If there are no error messages, the password is valid
+    return _errorMessage.isEmpty;
   }
 }
