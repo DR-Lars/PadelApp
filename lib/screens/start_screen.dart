@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
+import 'register_screen.dart';
 import 'package:padel_application/services/database_connection.dart';
 
 class StartScreen extends StatefulWidget {
-  const StartScreen({super.key, required this.title});
+  const StartScreen({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -14,7 +15,7 @@ class StartScreen extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
+  final String title = 'Log in page';
 
   @override
   State<StartScreen> createState() => _StartScreenState();
@@ -23,36 +24,38 @@ class StartScreen extends StatefulWidget {
 class _StartScreenState extends State<StartScreen> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
-  bool _isValid = false;
+  bool _isValid = true;
   String _errorMessage = '';
   Future<void> _login() async {
     var temp = await fetchUsers();
-    print(username.text);
-    print(password.text);
     setState(() {
-      _isValid = _validatePassword(password.text);
+      _isValid = _validate(password.text, username.text);
     });
     if(_isValid){
+      bool found = false;
       temp.forEach((user){
-        if(user.userName == username.text && user.password == username.text){
+        if(user.userName == username.text && user.password == password.text){
+          found = true;
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => HomeScreen(id: user.id)));
         }
       });
-    }else{
-      setState(() {
-        _errorMessage = "Wrong username or password";
-      });
+      if(!found){
+        setState(() {
+          _isValid = false;
+          _errorMessage = "Wrong username or password";
+        });
+      }
     }
   }
 
   void _register() {
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => const HomeScreen(title: "Home screen")));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RegisterScreen()));
   }
 
   @override
@@ -74,7 +77,7 @@ class _StartScreenState extends State<StartScreen> {
         title: const Text('Padleomic'),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 100),
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width - 600),
         child: Center(
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.
@@ -111,12 +114,11 @@ class _StartScreenState extends State<StartScreen> {
                 ),
 
                 // Display the result of password validation
-                _isValid ? const Text('Password is valid!', style: TextStyle(color: Colors.green),)
-                    : Text('Password is not valid!\n• $_errorMessage', style: const TextStyle(color: Colors.red),
+                _isValid ? const Text('') : Text('$_errorMessage', style: const TextStyle(color: Colors.red),
                 ),
               TextButton(
                   onPressed: _login,
-                  child: const Text('Login'),
+                  child: const Text('Sign in'),
                 ),
                 TextButton(
                   onPressed: _register,
@@ -127,13 +129,13 @@ class _StartScreenState extends State<StartScreen> {
       )
     );
   }
-  bool _validatePassword(String password) {
+  bool _validate(String password, String username) {
     // Reset error message
     _errorMessage = '';
 
     // Password length greater than 6
     if (password.length <6) {
-      _errorMessage += 'Password must be longer than 6 characters.\n';
+      _errorMessage += '• Password must be longer than 6 characters.\n';
     }
 
     // Contains at least one uppercase letter
@@ -156,6 +158,9 @@ class _StartScreenState extends State<StartScreen> {
       _errorMessage += '• Special character is missing.\n';
     }
 
+    if (username.length < 4){
+      _errorMessage += '• Username must be longer than 4 characters.\n';
+    }
     // If there are no error messages, the password is valid
     return _errorMessage.isEmpty;
   }

@@ -12,9 +12,7 @@ class HomeScreen extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title = "Home page";
   final String id;
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -56,7 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
             // action in the IDE, or press "p" in the console), to see the
             // wireframe for each widget.
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[]),
+            children: <Widget>[
+            ]),
       ),
     );
   }

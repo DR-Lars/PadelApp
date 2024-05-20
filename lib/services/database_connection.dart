@@ -8,7 +8,11 @@ Future<List<UserModel>> fetchUsers() async{
     .then((QuerySnapshot snapshot) {
       snapshot.docs.forEach((doc) {
         final data = doc.data() as Map;
-        final UserModel user = new UserModel(id: doc.id, email: data['email'], userName: data['username'], gender: data['gender'], phone: data['phone'], password: data['password'], location: new Location(latitude: data['location'].latitude, longitude: data['location'].longitude), bio: data['bio'], level: data['level']);
+        var location = null;
+        if(data['location'] != null){
+          location = new Location(latitude: data['location'].latitude, longitude: data['location'].longitude);
+        }
+        final UserModel user = new UserModel(id: doc.id, email: data['email'], userName: data['username'], gender: data['gender'], phone: data['phone'], password: data['password'], location: location, bio: data['bio'], level: data['level']);
         result.add(user);
       });
     })
@@ -16,16 +20,15 @@ Future<List<UserModel>> fetchUsers() async{
   return result;
 }
 
-Future<void> addUser(String name, String email, String password) {
+Future<String> addUser(String name, String email, String password) async{
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-  
-  return users.add({
+  DocumentReference doc = await users.add({
     'name': name,
     'email': email,
     'password': password,
-  })
-  .then((value) => print("User added successfully!"))
-  .catchError((error) => print("Failed to add user: $error"));
+    'level': 100,
+  });
+  return doc.id;
 }
 
 Future<void> fetchFields() {
