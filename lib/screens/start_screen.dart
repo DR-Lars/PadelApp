@@ -51,6 +51,17 @@ class _StartScreenState extends State<StartScreen> {
     }
   }
 
+  double padding(){
+    switch(MediaQuery.of(context).size.width){
+      case >1600:
+        return 700;
+      case >800:
+        return 300;
+      default:
+        return 20;
+    }
+  }
+
   void _register() {
     Navigator.push(
         context,
@@ -77,7 +88,7 @@ class _StartScreenState extends State<StartScreen> {
         title: const Text('Padleomic'),
       ),
       body: Padding(
-        padding: MediaQuery.of(context).size.width >= 800?  EdgeInsets.symmetric(horizontal: 300): EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: padding()),
         child: Center(
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.

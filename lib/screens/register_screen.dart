@@ -26,6 +26,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController password = TextEditingController();
   bool _isValid = true;
   String _errorMessage = '';
+
+  double padding(){
+    switch(MediaQuery.of(context).size.width){
+      case >1600:
+        return 700;
+      case >800:
+        return 300;
+      default:
+        return 20;
+    }
+  }
+
   void _login() {
     Navigator.push(
         context,
@@ -84,7 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           title: const Text('Padleomic'),
         ),
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width - 600),
+          padding: EdgeInsets.symmetric(horizontal: padding()),
           child: Center(
             // Center is a layout widget. It takes a single child and positions it
             // in the middle of the parent.
