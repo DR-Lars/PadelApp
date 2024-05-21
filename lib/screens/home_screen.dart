@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:padel_application/changedLibrary/horizontalLazyList/flutter_lazy_listview.dart';
+import 'package:padel_application/models/field.dart';
+import 'package:padel_application/services/database_connection.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.id});
@@ -18,6 +21,28 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final listController = DataFeedController<Field>();
+
+  _loadData() async {
+    List<Field> fields = await fetchFields();
+    listController.appendData(fields);
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    _loadData();
+  }
+
+  Widget fieldCard(BuildContext b, Field m, int d){
+    return Column(
+      children: [
+        Image(image: NetworkImage(m.image)),
+        Text(m.name),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -35,8 +60,24 @@ class _HomeScreenState extends State<HomeScreen> {
         // Here we take the value from the HomeScreen object that was created by
         // the App.build method, and use it to set our appbar title.
         title: const Text('Padleomic'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.comment),
+            tooltip: 'Comment Icon',
+            onPressed: () {
+              //TODO
+            },
+          ), //IconButton
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            tooltip: 'Notifications Icon',
+            onPressed: () {
+              //TODO
+            },
+          ), //IconButton
+        ], //<Widget>[]
       ),
-      body: const Center(
+      body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
@@ -53,8 +94,15 @@ class _HomeScreenState extends State<HomeScreen> {
             // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
             // action in the IDE, or press "p" in the console), to see the
             // wireframe for each widget.
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              Expanded(child: FlutterLazyListView<Field>(
+                  dataFeedController: listController,
+                  itemBuilder: (BuildContext c, Field m, int d){
+                    return fieldCard(c, m, d);
+                  },
+                  onReachingEnd: (){}//TODO
+              ))
             ]),
       ),
     );

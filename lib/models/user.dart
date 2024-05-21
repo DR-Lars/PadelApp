@@ -1,3 +1,4 @@
+import 'location.dart';
 class UserModel {
   final String id;
   final String email;
@@ -14,10 +15,4 @@ class UserModel {
   String toString() {
     return 'UserModel{id: $id, email: $email, userName: $userName, gender: $gender, phone: $phone, password: $password, location: $location, bio: $bio, level: $level}';
   }
-}
-
-class Location {
-  double? latitude;
-  double? longitude;
-  Location({this.latitude,this.longitude});
 }
