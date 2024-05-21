@@ -37,7 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget fieldCard(BuildContext b, Field m, int d){
     return Column(
       children: [
-        Image(image: NetworkImage(m.image)),
+        Image(
+            image: NetworkImage(m.image),
+            width: 400,
+        ),
         Text(m.name),
       ],
     );

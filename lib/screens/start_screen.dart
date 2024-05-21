@@ -33,7 +33,8 @@ class _StartScreenState extends State<StartScreen> {
     });
     if(_isValid){
       bool found = false;
-      temp.forEach((user){
+      for (var user in temp) {
+        print(user.toString());
         if(user.userName == username.text && user.password == password.text){
           found = true;
           Navigator.push(
@@ -41,7 +42,7 @@ class _StartScreenState extends State<StartScreen> {
               MaterialPageRoute(
                   builder: (context) => HomeScreen(id: user.id)));
         }
-      });
+      }
       if(!found){
         setState(() {
           _isValid = false;

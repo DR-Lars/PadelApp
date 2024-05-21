@@ -25,7 +25,7 @@ Future<List<UserModel>> fetchUsers() async{
 Future<String> addUser(String name, String email, String password) async{
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   DocumentReference doc = await users.add({
-    'name': name,
+    'username': name,
     'email': email,
     'password': password,
     'level': 100,
