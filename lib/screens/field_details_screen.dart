@@ -56,7 +56,7 @@ class _FieldDetailsScreen extends State<FieldDetailsScreen> {
   List<Widget> generateHours(){
     List<Widget> result = [];
     List<DateTime> times = [];
-    for(double i = double.parse(widget.field.openingsUur.toString()); i < widget.field.sluitingsUur; i+= 0.5){
+    for(double i = double.parse(widget.field.openingsUur.toString()); i < widget.field.sluitingsUur - 1; i+= 0.5){
       DateTime time = DateTime(0,0,0,i.floor(),i%1==0?0:30);
       times.add(time);
       result.add(TextButton(onPressed: (){changeTimestamp(time);}, child: Text(DateFormat.Hm().format(time))));
