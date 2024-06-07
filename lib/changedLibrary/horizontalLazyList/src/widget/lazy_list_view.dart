@@ -52,10 +52,13 @@ class FlutterLazyListView<T> extends StatefulWidget {
   ///Widget which is displayed when no data is present
   final ItemBuilder<T>? separatorBuilder;
 
+  final Axis direction;
+
   const FlutterLazyListView(
       {required this.dataFeedController,
       required this.itemBuilder,
       required this.onReachingEnd,
+      this.direction = Axis.horizontal,
       this.offset = 150,
       this.progressBuilder,
       this.errorBuilder,
@@ -70,6 +73,7 @@ class FlutterLazyListView<T> extends StatefulWidget {
       required this.itemBuilder,
       required this.onReachingEnd,
       required this.separatorBuilder,
+      this.direction = Axis.horizontal,
       this.offset = 150,
       this.progressBuilder,
       this.errorBuilder,
@@ -101,7 +105,7 @@ class _FlutterLazyListViewState<T> extends State<FlutterLazyListView<T>> {
                 return NotificationListener<ScrollNotification>(
                   onNotification: (info) => _onNotification(info),
                   child: CustomScrollView(
-                    scrollDirection: Axis.horizontal,
+                    scrollDirection: widget.direction,
                     slivers: [
                       if (widget.onRefresh != null)
                         CupertinoSliverRefreshControl(

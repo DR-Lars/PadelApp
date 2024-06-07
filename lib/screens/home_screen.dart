@@ -1,7 +1,10 @@
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:padel_application/changedLibrary/horizontalLazyList/flutter_lazy_listview.dart';
 import 'package:padel_application/models/field.dart';
+import 'package:padel_application/models/user.dart';
 import 'package:padel_application/services/database_connection.dart';
+import 'package:padel_application/screens/field_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.id});
@@ -21,11 +24,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final listController = DataFeedController<Field>();
+  final fieldController = DataFeedController<Field>();
+  final matchController = DataFeedController<Field>();
 
   _loadData() async {
     List<Field> fields = await fetchFields();
-    listController.appendData(fields);
+    fieldController.appendData(fields);
+    List<Field> matches = [];
+    matches = fields.where((field)=> field.reservations.isNotEmpty).toList();
+    matchController.appendData(matches);
   }
 
   @override
@@ -34,15 +41,34 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadData();
   }
 
-  Widget fieldCard(BuildContext b, Field m, int d){
-    return Column(
-      children: [
-        Image(
-            image: NetworkImage(m.image),
-            width: 400,
-        ),
-        Text(m.name),
-      ],
+  Widget _fieldCard(Field field){
+    Offset offset = const Offset(0, 0);
+    return Listener(
+        onPointerDown: (PointerDownEvent e) =>
+        {
+          offset = e.position
+        },
+        onPointerUp: (PointerUpEvent e) =>{
+          if(offset == e.position){
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FieldDetailsScreen(id: widget.id, field: field)
+                )
+            )
+          }
+        },
+        child: Column(
+          children: [
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Image(
+                  image: NetworkImage(field.image),
+                  height: 300,
+                )),
+            Text(field.name),
+          ],
+        )
     );
   }
 
@@ -99,15 +125,80 @@ class _HomeScreenState extends State<HomeScreen> {
             // wireframe for each widget.
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text("Fields")
+              ),
               Expanded(child: FlutterLazyListView<Field>(
-                  dataFeedController: listController,
-                  itemBuilder: (BuildContext c, Field m, int d){
-                    return fieldCard(c, m, d);
+                  dataFeedController: fieldController,
+                  itemBuilder: (BuildContext context, Field field, int index){
+                    return _fieldCard(field);
                   },
-                  onReachingEnd: (){}//TODO
+                  onReachingEnd: (){}
+              )),
+              const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text("Matches")
+              ),
+              Expanded(child: FlutterLazyListView<Field>(
+                  dataFeedController: matchController,
+                  itemBuilder: (BuildContext context, Field field, int index){
+                    return getFieldCard(field);
+                  },
+                  onReachingEnd: (){}
               ))
             ]),
       ),
+    );
+  }
+  Widget getFieldCard(Field field) {
+    return Column(children: [
+      Text(field.name),
+      Row(children: getDayCard(field.reservations, field))
+    ]);
+  }
+
+  List<Widget> getDayCard(List<Reservations> reservations, Field field){
+    List<Widget> result = [];
+    for (Reservations reservation in reservations) {
+      result.add(Column(
+        children: [Padding(padding: const EdgeInsets.all(10) ,child: Text(reservation.date)),
+      ...getTimeColumn(reservation, field)],));
+    }
+    return result;
+  }
+
+  List<Widget> getTimeColumn(Reservations reservation, Field field){
+    List<Widget> result = [];
+    for (TimeSlot timeSlot in reservation.time) {
+      result.add(
+          Listener(onPointerDown: (e){
+            field.reservations.where((reservation2)=> reservation2.date == reservation.date).first.time.where((timeslot2)=> timeslot2.time == timeSlot.time).first.users.add(widget.id);
+            addReservation(field);
+          },
+          child: Column(children: [Text(timeSlot.time),
+            ...getUserColumn(timeSlot.users)],)));
+    }
+    return result;
+  }
+
+  List<Widget> getUserColumn(List<String> users){
+    List<Widget> result = [];
+    for (String user in users) {
+      result.add(getUser(user));
+    }
+    return result;
+  }
+  Widget getUser(String userId){
+    return FutureBuilder<UserModel>(
+        future: getUserById(userId),
+        builder: (context, AsyncSnapshot<UserModel> snapshot) {
+          if (snapshot.hasData) {
+            return Text(snapshot.data!.userName);
+          } else {
+            return const CircularProgressIndicator();
+          }
+        }
     );
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
 import 'package:padel_application/services/database_connection.dart';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -26,6 +28,13 @@ class _StartScreenState extends State<StartScreen> {
   TextEditingController password = TextEditingController();
   bool _isValid = true;
   String _errorMessage = '';
+
+  String encryptPassword(String password) {
+    final bytes = utf8.encode(password);
+    final hash = sha256.convert(bytes);
+    return hash.toString();
+  }
+
   Future<void> _login() async {
     var temp = await fetchUsers();
     setState(() {
@@ -34,8 +43,8 @@ class _StartScreenState extends State<StartScreen> {
     if(_isValid){
       bool found = false;
       for (var user in temp) {
-        print(user.toString());
-        if(user.userName == username.text && user.password == password.text){
+        String encryptedPassword = encryptPassword(password.text);
+        if(user.userName == username.text && user.password == encryptedPassword){
           found = true;
           Navigator.push(
               context,
@@ -67,7 +76,7 @@ class _StartScreenState extends State<StartScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => RegisterScreen()));
+            builder: (context) => const RegisterScreen()));
   }
 
   @override
@@ -126,7 +135,7 @@ class _StartScreenState extends State<StartScreen> {
                 ),
 
                 // Display the result of password validation
-                _isValid ? const Text('') : Text('$_errorMessage', style: const TextStyle(color: Colors.red),
+                _isValid ? const Text('') : Text(_errorMessage, style: const TextStyle(color: Colors.red),
                 ),
               TextButton(
                   onPressed: _login,

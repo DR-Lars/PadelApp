@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'start_screen.dart';
 import 'package:padel_application/services/database_connection.dart';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({super.key});
+  const RegisterScreen({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -27,6 +29,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isValid = true;
   String _errorMessage = '';
 
+  String encryptPassword(String password) {
+    final bytes = utf8.encode(password);
+    final hash = sha256.convert(bytes);
+    return hash.toString();
+  }
+
   double padding(){
     switch(MediaQuery.of(context).size.width){
       case >1600:
@@ -42,7 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => StartScreen()));
+            builder: (context) => const StartScreen()));
   }
   Future<void> _register() async{
     var temp = await fetchUsers();
@@ -51,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
     if(_isValid){
       bool found = false;
-      temp.forEach((user){
+      for (var user in temp) {
         if(user.userName == username.text || user.email == email.text){
           found = true;
           if(user.userName == username.text){
@@ -61,18 +69,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
             _errorMessage += 'This email is already in use';
           }
         }
-      });
+      }
       if(found){
         setState(() {
           _isValid = false;
         });
       } else {
-        final userId = await addUser(username.text, email.text, password.text);
-        print(userId);
+        String encryptedPassword = encryptPassword(password.text);
+        final userId = await addUser(username.text, email.text, encryptedPassword);
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => HomeScreen(id: userId)));
+                builder: (context) => HomeScreen(id: userId))
+        );
       }
     }
   }
@@ -140,7 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
 
                   // Display the result of password validation
-                  _isValid ? const Text('') : Text('$_errorMessage', style: const TextStyle(color: Colors.red),
+                  _isValid ? const Text('') : Text(_errorMessage, style: const TextStyle(color: Colors.red),
                   ),
                   TextButton(
                     onPressed: _register,
@@ -187,7 +196,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _errorMessage += '• Username must be longer than 4 characters.\n';
     }
 
-    if (!email.contains(RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'))){
+    if (!email.contains(RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$'))){
       _errorMessage += '• Invalid email.\n';
     }
 
